@@ -1,3 +1,8 @@
 db.sqlite3
 .idea
+
+### Python
+# Byte-compiled / optimezed / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
