@@ -1,1 +1,2 @@
 Django~=2.2
+invoke~=1.2.0 
