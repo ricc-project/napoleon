@@ -12,3 +12,9 @@ services:
       - "8000:8000"
     volumes:
       - ./src/:/src/
+    networks:
+      - ricc-network
+
+networks:
+  ricc-network:
+    driver: bridge
