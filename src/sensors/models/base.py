@@ -14,8 +14,7 @@ class User(models.Model):
 class DataCluster(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     collected_at = models.DateTimeField(auto_now=True)
-    
-@rest_api()
+
 class Data(models.Model):
     data_cluster = models.ForeignKey(DataCluster, on_delete=models.CASCADE)
 
