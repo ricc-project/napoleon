@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    command: db run
+    command: inv db run
     ports:
       - "8000:8000"
     volumes:
