@@ -5,9 +5,8 @@ from ..manager import UserManager
 @rest_api(['username'])
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
-    salt = models.CharField(max_length=50)
-    hash = models.CharField(max_length=50)
-    authToken = models.CharField(max_length=50)
+    hash = models.CharField(max_length=128)
+    authToken = models.CharField(max_length=64)
     objects = UserManager()
        
 
