@@ -1,13 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User as BaseUser
-
 from boogie.rest import rest_api
+from ..manager import UserManager
 
-@rest_api(["id"])
-class User(BaseUser):
-    """
-    asddsaidsadasj
-    """
+@rest_api(['username'])
+class User(models.Model):
+    username = models.CharField(max_length=50, unique=True)
+    salt = models.CharField(max_length=50)
+    hash = models.CharField(max_length=50)
+    authToken = models.CharField(max_length=50)
+    objects = UserManager()
+       
 
 @rest_api()
 class DataCluster(models.Model):
