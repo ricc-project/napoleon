@@ -30,3 +30,31 @@ class SolarData(base.Data):
 @rest_api()
 class ActuatorData(base.Data):
     status = models.BooleanField(default=False)
+
+
+json_names = {
+    "soil": {
+        "model":SoilData,
+        "fields":["moisture", "temperature"]
+    },
+    "air":  {
+        "model":AirData,
+        "fields":["humidity", "temperature", "pressure"]
+    },
+    "wind":  {
+        "model":WindData,
+        "fields":["speed", "direction"]
+    },
+    "rain":  {
+        "model":RainData,
+        "fields":["rainfall"]
+    },
+    "solar":  {
+        "model":SolarData,
+        "fields":["radiation"]
+    },
+    "actuator":  {
+        "model":ActuatorData,
+        "fields":["status"]
+    }
+}
