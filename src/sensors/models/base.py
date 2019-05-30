@@ -2,11 +2,11 @@ from django.db import models
 from boogie.rest import rest_api
 from ..manager import UserManager
 
-@rest_api(exclude=['hash','authToken'])
+@rest_api(exclude=['hash','auth_token'])
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
     hash = models.CharField(max_length=128)
-    authToken = models.CharField(max_length=64)
+    auth_token = models.CharField(max_length=64)
     objects = UserManager()
 
 @rest_api()

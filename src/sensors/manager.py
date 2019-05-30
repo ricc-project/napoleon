@@ -8,9 +8,9 @@ class UserManager(models.Manager):
         Create and save a user with the given username and password.
         """
         hash = self._hash_password(password)
-        authToken = self._get_salt()
+        auth_token = self._get_salt()
 
-        user = self.model(username=username, hash=hash, authToken=authToken)
+        user = self.model(username=username, hash=hash, auth_token=auth_token)
 
         user.save(using=self._db)
 
