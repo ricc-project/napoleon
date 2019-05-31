@@ -15,9 +15,10 @@ urlpatterns = Router()
 def signup(request):
     rstatus = status.HTTP_403_FORBIDDEN
     if(request.method == "POST"):
-        if request.POST.keys() >= {"username", "password"}:
-            username = request.POST['username']
-            password = request.POST['password']
+        data = json.loads(request.body)
+        if data.keys() >= {"username", "password"}:
+            username = data['username']
+            password = data['password']
             try:
                 user = User.objects.create_user(username, password)
                 response = {"authentication_token": user.auth_token}
