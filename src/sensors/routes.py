@@ -3,6 +3,7 @@ from boogie.router import Router
 from django.http import Http404, HttpResponse, JsonResponse
 from .models import User, json_names, DataCluster
 from .serializer import create_serializer
+from .manager import verify_password
 from rest_framework import status
 import hashlib
 import binascii
@@ -97,16 +98,5 @@ def verify_sent_credentials(request):
     return False
 
 
-def verify_password(user=None, provided_password=None):
-    """Verify a stored password against one provided by user"""
-    if user is None or provided_password is None:
-        return False
 
-    salt = user.hash[:64]
-    stored_password = user.hash[64:]
-    pwdhash = hashlib.pbkdf2_hmac('sha512',
-                                  provided_password.encode('utf-8'),
-                                  salt.encode('ascii'),
-                                  100000)
-    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_password
