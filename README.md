@@ -17,10 +17,10 @@ Every user can create different clusters of sensor data, E.g. a cluster that hav
 ### URL mapping
 
 [`POST`] *Register a new user:*
- - https://napoleon.api/v1/register
+ - https://napoleon.api/signup/
 
 [`POST`] *Authentication to get user token:*
- - https://napoleon.api/v1/auth
+ - https://napoleon.api/login
 
 [`GET`] *Get all user data clusters:*
  - https://napoleon.api/v1/data-clusters/all
