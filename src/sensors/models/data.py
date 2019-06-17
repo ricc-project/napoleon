@@ -5,7 +5,9 @@ from . import base
 
 @rest_api()
 class SoilData(base.Data):
-    moisture = models.FloatField()
+    moisture1 = models.FloatField()
+    moisture2 = models.FloatField()
+    moisture3 = models.FloatField()
     temperature = models.FloatField()
 
 @rest_api()
@@ -35,7 +37,7 @@ class ActuatorData(base.Data):
 json_names = {
     "soil": {
         "model":SoilData,
-        "fields":["moisture", "temperature"]
+        "fields":["moisture1","moisture2","moisture3", "temperature"]
     },
     "air":  {
         "model":AirData,
