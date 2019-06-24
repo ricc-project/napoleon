@@ -2,13 +2,19 @@ version: '3.5'
 
 
 services:
-  django:
+  napoleon:
     image: api
+    networks:
+      - ricc-network
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     command: inv db run
     ports:
-      - "8080:8000"
+      - "4600:4600"
     volumes:
       - ./src/:/src/
+
+networks:
+  ricc-network:
+    driver: bridge
