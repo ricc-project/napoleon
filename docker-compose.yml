@@ -4,6 +4,7 @@ version: '3.5'
 services:
   napoleon:
     image: api
+    hostname: napoleon
     networks:
       - ricc-network
     build:
