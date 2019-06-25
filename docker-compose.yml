@@ -5,17 +5,11 @@ services:
   napoleon:
     image: api
     hostname: napoleon
-    networks:
-      - ricc-network
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     command: inv db run
     ports:
-      - "4600:4600"
+      - "8001:8000"
     volumes:
       - ./src/:/src/
-
-networks:
-  ricc-network:
-    driver: bridge
