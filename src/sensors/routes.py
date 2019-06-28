@@ -2,7 +2,7 @@ from django.core import serializers
 from boogie.router import Router
 from django.http import Http404, HttpResponse, JsonResponse
 from .models import User, json_names, DataCluster
-from .serializer import create_serializer
+from .serializer import create_serializer, DataClusterSerializer
 from .manager import verify_password
 from rest_framework import status
 import hashlib
@@ -36,25 +36,17 @@ def signup(request):
 
 @urlpatterns.route("login/")
 def login(request):
-    rstatus = status.HTTP_403_FORBIDDEN
-    if(verify_sent_credentials(request)):
-        username = request.POST['username']
-        password = request.POST['password']
-        user = None
-        try:
-            user = User.objects.get(username=username)
-        except:
-            response = response = {"Incorrect Credentials": "Invalid login information."}
 
-        if(verify_password(user, password)):
-            response = {"authentication_token": str(user.auth_token)}
-            rstatus = status.HTTP_202_ACCEPTED
-        else:
-            response = {"Incorrect Credentials": "Invalid login information."}
+    rstatus = status.HTTP_403_FORBIDDEN
+    user = verify_auth(request)
+    response = response = {"Incorrect Credentials": "Invalid login information."}
+    data = json.loads(request.body)
+    password = data['password']
+    if(verify_password(user, password)):
+        response = {"authentication_token": str(user.auth_token)}
+        rstatus = status.HTTP_202_ACCEPTED
     else:
-        response = {
-            "Not enough information sent to do this.":
-            "No username or Password, maybe not a POST method."}
+        response = {"Incorrect Credentials": "Invalid login information."}
     
     return JsonResponse(response)
 
@@ -62,17 +54,31 @@ def login(request):
 def send_data(request):
     user = verify_auth(request)
     data = get_data(request)
+    time = get_time(request)
     print(data)
-    if user and data:
+    if user and data and time:
         # try:
-        create_data(user, data)
+        create_data(user, data, time)
         return HttpResponse("Ae", status=status.HTTP_201_CREATED)
         # except:
             # return HttpResponse("Data in invalid format", status=status.HTTP_406_NOT_ACCEPTABLE)
     else:
         return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
 
-def create_data(user, cluster_data):
+@urlpatterns.route('get_last/')
+def last_data(request):
+    user = verify_auth(request)
+    if user:
+        data_cluster = user.data.first()
+        print(data_cluster)
+        serializer = DataClusterSerializer(data_cluster)
+        data = json.dumps(serializer.data)
+        return HttpResponse(data, status=status.HTTP_200_OK)
+    else:
+        return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
+
+def create_data(user, cluster_data, time):
+    # TODO use time on DataCluster Constructor
     cluster = DataCluster(owner=user)
     cluster.save()
     print("Received data for: " + str(cluster_data.keys()))
@@ -83,6 +89,7 @@ def create_data(user, cluster_data):
             model = json_names[data]['model'](**serializer.data)
             model.data_cluster = cluster
             model.save()
+            print("saved: " + data)
 
 def verify_auth(request):
     if(request.method == "POST"):
@@ -106,3 +113,11 @@ def get_data(request):
         return None
 
 
+def get_time(request):
+    if(request.method == "POST"):
+        data = json.loads(request.body)
+        if 'timestamp' in data.keys():
+            return data['timestamp']
+        return None
+    else:
+        return None
