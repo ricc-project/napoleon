@@ -69,7 +69,7 @@ def send_data(request):
 def last_data(request):
     user = verify_auth(request)
     if user:
-        data_cluster = user.data.first()
+        data_cluster = user.data.last()
         print(data_cluster)
         serializer = DataClusterSerializer(data_cluster)
         data = json.dumps(serializer.data)
@@ -85,6 +85,7 @@ def create_data(user, cluster_data, time):
     for data in cluster_data.keys():
         serializer = create_serializer(data)
         serializer = serializer(data=cluster_data[data])
+
         if serializer.is_valid():
             model = json_names[data]['model'](**serializer.data)
             model.data_cluster = cluster
