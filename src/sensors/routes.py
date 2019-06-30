@@ -70,9 +70,13 @@ def last_data(request):
     user = verify_auth(request)
     if user:
         data_cluster = user.data.last()
-        print(data_cluster)
+        print(data_cluster.collected_at)
+        collected_at = str(data_cluster.collected_at.hour) + ":" + str(data_cluster.collected_at.minute)
         serializer = DataClusterSerializer(data_cluster)
-        data = json.dumps(serializer.data)
+        data = serializer.data
+        data.update({'collected_at': collected_at})
+        data = json.dumps(data)
+        
         return HttpResponse(data, status=status.HTTP_200_OK)
     else:
         return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
