@@ -70,16 +70,44 @@ def last_data(request):
     user = verify_auth(request)
     if user:
         data_cluster = user.data.last()
-        print(data_cluster.collected_at)
-        collected_at = str(data_cluster.collected_at.hour) + ":" + str(data_cluster.collected_at.minute)
         serializer = DataClusterSerializer(data_cluster)
         data = serializer.data
-        data.update({'collected_at': collected_at})
+
+        if data_cluster is not None:
+            collected_at = data_cluster.collected_at.strftime("%d/%m/%Y - %H:%M")
+            data.update({'collected_at': collected_at})
+        
         data = json.dumps(data)
         
         return HttpResponse(data, status=status.HTTP_200_OK)
     else:
         return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
+
+
+@urlpatterns.route('get_last_switch_activated/')
+def last_switch_activated(request):
+    user = verify_auth(request)
+    if user:
+        last_data_cluster = user.data.last()
+        data = {}
+
+        if last_data_cluster is not None:
+            collected_at = last_data_cluster.collected_at.strftime("%d/%m/%Y - %H:%M")
+            data.update({'collected_at': collected_at})
+        
+        activated_data_cluster = user.data.filter(actuatordata__status=True).last()
+        print("active", activated_data_cluster)
+
+        if activated_data_cluster is not None:
+            last_active = activated_data_cluster.collected_at.strftime("%d/%m/%Y - %H:%M")
+            data.update({'last_active': last_active})
+
+        data = json.dumps(data)
+        
+        return HttpResponse(data, status=status.HTTP_200_OK)
+    else:
+        return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
+
 
 def create_data(user, cluster_data, time):
     # TODO use time on DataCluster Constructor
