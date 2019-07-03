@@ -83,6 +83,40 @@ def last_data(request):
     else:
         return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
 
+@urlpatterns.route('get_period_data/')
+def period_data(request):
+    if(request.method == "POST"):
+        request_data = json.loads(request.body)
+
+        user = verify_auth(request)
+
+        if user:
+            results = []
+            data_clusters = user.data.all()
+            filters = request_data['filters']
+
+            category = filters['category']
+            measure = filters['measure']
+            amount = filters['amount']
+
+            for data_cluster in data_clusters:
+                result = {}
+
+                serializer = DataClusterSerializer(data_cluster)
+                data = serializer.data
+
+
+                if serializer.data is not None:
+                    result.update({'measure': serializer.data[category][0][measure]})
+                    collected_at = data_cluster.collected_at.strftime("%d/%m/%Y - %H:%M")
+                    result.update({'collected_at': collected_at})
+            
+                results.append(result)
+            
+            return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
+        else:
+            return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
+
 
 @urlpatterns.route('get_last_switch_activated/')
 def last_switch_activated(request):
