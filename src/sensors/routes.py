@@ -101,6 +101,9 @@ def period_data(request):
             measure = filters['measure']
             amount = filters['amount']
 
+            measures = []
+            collects = []
+
             for data_cluster in data_clusters:
                 result = {}
 
@@ -109,15 +112,19 @@ def period_data(request):
 
 
                 if serializer.data is not None:
-                    result.update({'measure': serializer.data[category][0][measure]})
+                    measures.append(serializer.data[category][0][measure])
                     
                     brazil_hour = data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-                    collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M")
-                    result.update({'collected_at': collected_at})
-            
-                results.append(result)
-            
-            return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
+                    collected_at = brazil_hour.strftime("%H:%M")
+                    collects.append(collected_at)
+
+                
+            result = {
+                "data": measures,
+                "labels": collects
+            }
+            print(result)
+            return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
         else:
             return HttpResponse("Unauthorized.", status=status.HTTP_403_FORBIDDEN)
 
