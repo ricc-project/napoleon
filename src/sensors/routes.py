@@ -94,7 +94,7 @@ def period_data(request):
 
         if user:
             results = []
-            data_clusters = user.data.all()[:20]
+            data_clusters = list(user.data.all())[-20:]
             filters = request_data['filters']
 
             category = filters['category']
