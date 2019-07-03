@@ -76,7 +76,7 @@ def last_data(request):
 
         if data_cluster is not None:
             brazil_hour = data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M")
+            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M:%S")
             data.update({'collected_at': collected_at})
         
         data = json.dumps(data)
@@ -115,7 +115,7 @@ def period_data(request):
                     measures.append(serializer.data[category][0][measure])
                     
                     brazil_hour = data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-                    collected_at = brazil_hour.strftime("%H:%M")
+                    collected_at = brazil_hour.strftime("%H:%M:%S")
                     collects.append(collected_at)
 
                 
@@ -138,7 +138,7 @@ def last_switch_activated(request):
 
         if last_data_cluster is not None:
             brazil_hour = last_data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M")
+            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M:%S")
             data.update({'collected_at': collected_at})
         
         activated_data_cluster = user.data.filter(actuatordata__status=True).last()
@@ -146,7 +146,7 @@ def last_switch_activated(request):
 
         if activated_data_cluster is not None:
             brazil_hour = activated_data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M")
+            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M:%S")
             data.update({'last_active': last_active})
 
         data = json.dumps(data)
