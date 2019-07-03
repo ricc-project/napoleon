@@ -1,3 +1,4 @@
+from datetime import timezone, timedelta
 from django.core import serializers
 from boogie.router import Router
 from django.http import Http404, HttpResponse, JsonResponse
@@ -126,7 +127,8 @@ def last_switch_activated(request):
         data = {}
 
         if last_data_cluster is not None:
-            collected_at = last_data_cluster.collected_at.strftime("%d/%m/%Y - %H:%M")
+            brazil_hour = last_data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
+            collected_at = brazil_hour.strftime("%d/%m/%Y - %H:%M")
             data.update({'collected_at': collected_at})
         
         activated_data_cluster = user.data.filter(actuatordata__status=True).last()
