@@ -104,21 +104,27 @@ def period_data(request):
             measures = []
             collects = []
 
+
             for data_cluster in data_clusters:
                 result = {}
-
+                data_measure = {}
                 serializer = DataClusterSerializer(data_cluster)
                 data = serializer.data
 
 
                 if serializer.data is not None:
-                    measures.append(serializer.data[category][0][measure])
-                    
                     brazil_hour = data_cluster.collected_at.astimezone(timezone(timedelta(hours=-3)))
-                    collected_at = brazil_hour.strftime("%H:%M:%S")
+                    collected_at = brazil_hour.timestamp() * 1000
                     collects.append(collected_at)
 
-                
+                    data_measure.update(
+                        {
+                            "value": serializer.data[category][0][measure],
+                            "time": collected_at
+                        }
+                    )
+                    measures.append(data_measure)
+                    
             result = {
                 "data": measures,
                 "labels": collects
